@@ -2,7 +2,6 @@ import React, { ChangeEvent, FormEvent, useState } from "react";
 
 import { Row } from "./Row";
 import { data } from "../todos";
-import { AddTodo } from "./AddTodo";
 import { Todo } from "../types";
 const paused = "Paused";
 
