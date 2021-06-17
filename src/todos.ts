@@ -1,26 +1,27 @@
 export const data = [
     {
-      id: "0",
+      id: 1,
       isCompleted: false,
-      title: "Task #1",
+      title: "Tailwind",
       status:"Paused",
-      date: "21 October 2020",
-      time: "09:30 am"
+      date: "2021-03-05",
+      time: "08:45"
     },
     {
-      id: "1",
+      id: 2,
       isCompleted: false,
-      title: "Task #2",
+      title: "React Project",
       status:"In Progress",
-      date: "21 October 2020",
-      time: "11:00 am"
+      date: "2021-04-12",
+      time: "09:30"
     },
     {
-      id: "2",
+      id: 3,
       isCompleted: false,
-      title: "Task #3",
+      title: "A New Task",
       status:"In Progress",
-      date: "21 October 2020",
-      time: "05:30 pm"
+      date: "2021-08-15",
+      time: "10:25"
     },
   ]
+  export const sortDir = [{direction:"asc"}]

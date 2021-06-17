@@ -1,33 +1,110 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  memo,
+  useMemo,
+} from "react";
 
-import { Row } from "./Row";
-import { data } from "../todos";
-import { Todo } from "../types";
-const paused = "Paused";
+import { data, sortDir } from "../todos";
+import { Todo, sortDirection } from "../types";
+import { Modal } from "../Modal/modal";
 
-export const Todos = () => {
+const pausedBtn = "Paused";
+const completedBtn = "Completed";
+const todoBtn = "ToDo";
+const inProgressBtn = "In Progress";
+
+export const Todos = memo(() => {
   const [activeStatus, setActiveStatus] = useState(1);
+  const [isShowModal, setShowModal] = useState(false);
+  const [selectedItems, setSelectedItem] = useState<Todo>();
+  const [todoList, setTodoList] = useState<Todo[]>(data);
+  const [headers, setHeaders] = useState<sortDirection[]>(sortDir);
 
-  const [title, setTitle] = useState<string>("");
-  const [status, setStatus] = useState<string>("");
-  const [date, setDate] = useState<string>("");
-  const [time, setTime] = useState<string>("");
-  const [todoList, setTodoList] = useState<Todo[]>([]);
+  useEffect(() => {
+    setHeaders(sortDir);
+  }, []);
 
-  const addTask = (): void => {
-    const newTask = { title: title, status: status, date: date, time: time };
-    setTodoList([...todoList, newTask]);
-    setTitle("Task #4");
-    setStatus("To Do");
-    setDate("12 June 2021");
-    setTime("11:30 pm");
+  const Sorter = (fieldToSort: sortDirection) => {
+    let sortedArray = [...todoList];
+    if (fieldToSort.direction === "asc") {
+      sortedArray.sort((a, b) =>
+        a["title"] > b["title"] ? 1 : b["title"] > a["title"] ? -1 : 0
+      );
+    } else {
+      sortedArray.sort((a, b) =>
+        a["title"] < b["title"] ? 1 : b["title"] < a["title"] ? -1 : 0
+      );
+    }
+    fieldToSort.direction === "asc"
+      ? (fieldToSort.direction = "dsc")
+      : (fieldToSort.direction = "asc");
+
+    setTodoList([...sortedArray]);
   };
+
+  function editItem(item: Todo) {
+    setSelectedItem(item);
+    setShowModal(true);
+  }
+
+  function addItem() {
+    setSelectedItem(undefined);
+    setShowModal(true);
+  }
+
+  const addTodoList = useCallback((item: Todo) => {
+    setTodoList((todoList) => [...todoList, item]);
+  }, []);
+
+  const deleteTodo = (id: number) => {
+    const updatedTodos = todoList.filter((todo) => todo.id !== id);
+    setTodoList(updatedTodos);
+  };
+
+  const CheckTodoDone = (id: number) => {
+    const updatedTodos = todoList.map((todo) => {
+      if (todo.id === id) {
+        return {
+          ...todo,
+          isCompleted: !todo.isCompleted,
+        };
+      }
+      return todo;
+    });
+    setTodoList(updatedTodos);
+  };
+
+  /*arrayCopy.sort((a, b) =>
+      //a["title"].toString().localeCompare((b["title"] || "").toString())
+      {
+        if (a.title < b.title) return -1;
+        else if (a.title > b.title) return 1;
+        return 0;
+      }
+    );*/
+  // setSortConfig(arrayCopy);
+
+  /*useEffect(() => {
+    const json = localStorage.getItem("todoList");
+    const loadedTodos = JSON.parse(json !== null ? json : "");
+    if (loadedTodos) {
+      setTodoList(loadedTodos);
+    }
+  }, []);
+
+  useEffect(() => {
+    const json = JSON.stringify(todoList);
+    localStorage.setItem("todoList", json);
+  }, [todoList]);*/
 
   return (
     <>
       <div className="flex justify-end mr-12 mt-8 ">
         <button
-          onClick={addTask}
+          onClick={addItem}
           className="inline-flex items-center px-3 py-2 justify-end w-24 h-8 text-white text-xs font-semibold bg-blue-600 rounded-md shadow-sm"
         >
           <svg
@@ -47,6 +124,7 @@ export const Todos = () => {
           <p>Add Task</p>
         </button>
       </div>
+
       <div className="mx-auto container py-0 px-4 flex items-center justify-center w-full">
         <ul className="w-full hidden md:flex items-center pb-0 border-b space-x-1 border-gray-200">
           <li
@@ -105,9 +183,13 @@ export const Todos = () => {
                     <th className="px-6 py-3 ml-10 mr-10"></th>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left text-sm font-semibold text-gray-500 tracking-wider"
+                      className="px-6 py-3 text-left text-sm font-semibold text-gray-500 tracking-wider "
                     >
-                      Tasks
+                      {headers.map((val) => {
+                        return (
+                          <button onClick={() => Sorter(val)}>Tasks</button>
+                        );
+                      })}
                     </th>
                     <th
                       scope="col"
@@ -135,11 +217,10 @@ export const Todos = () => {
                 </thead>
 
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {data.map((todo) => (
-                    //<Row key={todo.id} todo={todo} />
-                    <tr key={todo.id}>
+                  {todoList.map((todo) => (
+                    <tr>
                       <td>
-                        <input type="checkbox" checked={todo.isCompleted} />
+                        <input type="checkbox" />
                       </td>
                       <td className="px-6 py-4 ml-3 whitespace-nowrap">
                         <div className="text-sm font-bold text-gray-700">
@@ -149,9 +230,15 @@ export const Todos = () => {
                       <td className="px-6 py-4 ml-3 whitespace-nowrap">
                         <button
                           className={`rounded-full border-gray-400 ${
-                            todo.status === paused
+                            todo.status === pausedBtn
                               ? "bg-yellow-500 h-7 w-20 text-white text-sm"
-                              : "bg-blue-700 h-7 w-24 text-white text-sm"
+                              : todo.status === completedBtn
+                              ? "bg-green-500 h-7 w-24 text-white text-sm"
+                              : todo.status === todoBtn
+                              ? "bg-purple-500 h-7 w-24 text-white text-sm"
+                              : todo.status === inProgressBtn
+                              ? "bg-blue-600 h-7 w-24 text-white text-sm"
+                              : ""
                           }  `}
                         >
                           {todo.status}
@@ -169,6 +256,7 @@ export const Todos = () => {
                       </td>
                       <td className="flex py-5 px-10 space-x-6">
                         <svg
+                          onClick={() => editItem(todo)}
                           xmlns="http://www.w3.org/2000/svg"
                           className="h-5 w-5 text-blue-500"
                           viewBox="0 0 20 20"
@@ -177,6 +265,7 @@ export const Todos = () => {
                           <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
                         </svg>
                         <svg
+                          onClick={() => deleteTodo(todo.id)}
                           xmlns="http://www.w3.org/2000/svg"
                           className="h-5 w-5 text-red-600"
                           viewBox="0 0 20 20"
@@ -197,6 +286,12 @@ export const Todos = () => {
           </div>
         </div>
       </div>
+      <Modal
+        isShow={isShowModal}
+        data={selectedItems}
+        setIsShow={setShowModal}
+        addData={addTodoList}
+      />
     </>
   );
-};
+});
