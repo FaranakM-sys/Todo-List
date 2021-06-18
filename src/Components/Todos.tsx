@@ -1,11 +1,4 @@
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  useCallback,
-  memo,
-  useMemo,
-} from "react";
+import React, { useState, useEffect, useCallback, memo, useMemo } from "react";
 
 import { data, sortDir } from "../todos";
 import { Todo, sortDirection } from "../types";
@@ -21,29 +14,33 @@ export const Todos = memo(() => {
   const [isShowModal, setShowModal] = useState(false);
   const [selectedItems, setSelectedItem] = useState<Todo>();
   const [todoList, setTodoList] = useState<Todo[]>(data);
+  const [allItems, setAllItems] = useState<Todo[]>(data);
   const [headers, setHeaders] = useState<sortDirection[]>(sortDir);
 
   useEffect(() => {
     setHeaders(sortDir);
   }, []);
 
-  const Sorter = (fieldToSort: sortDirection) => {
-    let sortedArray = [...todoList];
-    if (fieldToSort.direction === "asc") {
-      sortedArray.sort((a, b) =>
-        a["title"] > b["title"] ? 1 : b["title"] > a["title"] ? -1 : 0
-      );
-    } else {
-      sortedArray.sort((a, b) =>
-        a["title"] < b["title"] ? 1 : b["title"] < a["title"] ? -1 : 0
-      );
-    }
-    fieldToSort.direction === "asc"
-      ? (fieldToSort.direction = "dsc")
-      : (fieldToSort.direction = "asc");
+  const Sorter = useMemo(
+    () => (fieldToSort: sortDirection) => {
+      let sortedArray = [...todoList];
+      if (fieldToSort.direction === "asc") {
+        sortedArray.sort((a, b) =>
+          a["title"] > b["title"] ? 1 : b["title"] > a["title"] ? -1 : 0
+        );
+      } else {
+        sortedArray.sort((a, b) =>
+          a["title"] < b["title"] ? 1 : b["title"] < a["title"] ? -1 : 0
+        );
+      }
+      fieldToSort.direction === "asc"
+        ? (fieldToSort.direction = "dsc")
+        : (fieldToSort.direction = "asc");
 
-    setTodoList([...sortedArray]);
-  };
+      setTodoList([...sortedArray]);
+    },
+    [todoList]
+  );
 
   function editItem(item: Todo) {
     setSelectedItem(item);
@@ -65,27 +62,36 @@ export const Todos = memo(() => {
   };
 
   const CheckTodoDone = (id: number) => {
-    const updatedTodos = todoList.map((todo) => {
+    const updatedTodos = allItems.map((todo) => {
       if (todo.id === id) {
         return {
           ...todo,
           isCompleted: !todo.isCompleted,
+          status: completedBtn,
         };
       }
       return todo;
     });
-    setTodoList(updatedTodos);
+    console.log(updatedTodos);
+    const todoItems = updatedTodos.filter((todo) => todo.isCompleted === true);
+    setActiveStatus(2);
+    setAllItems(updatedTodos);
+    setTodoList(todoItems);
   };
 
-  /*arrayCopy.sort((a, b) =>
-      //a["title"].toString().localeCompare((b["title"] || "").toString())
-      {
-        if (a.title < b.title) return -1;
-        else if (a.title > b.title) return 1;
-        return 0;
-      }
-    );*/
-  // setSortConfig(arrayCopy);
+  const tabChange = (tabIndex: number) => {
+    const todoItems = allItems.filter((todo) => todo.isCompleted === false);
+
+    if (tabIndex === 1) {
+      setActiveStatus(tabIndex);
+      setTodoList(todoItems);
+    }
+    const alltodos = allItems.filter((todo) => todo.isCompleted === true);
+    if (tabIndex === 2) {
+      setActiveStatus(tabIndex);
+      setTodoList(alltodos);
+    }
+  };
 
   /*useEffect(() => {
     const json = localStorage.getItem("todoList");
@@ -128,7 +134,7 @@ export const Todos = memo(() => {
       <div className="mx-auto container py-0 px-4 flex items-center justify-center w-full">
         <ul className="w-full hidden md:flex items-center pb-0 border-b space-x-1 border-gray-200">
           <li
-            onClick={() => setActiveStatus(1)}
+            onClick={() => tabChange(1)}
             className={
               activeStatus === 1
                 ? "py-2 px-4 cursor-pointer border-t border-l border-r w-28 ease-in duration-150 rounded xl:text-xs font-semibold text-center text-blue-600"
@@ -137,8 +143,9 @@ export const Todos = memo(() => {
           >
             To Do
           </li>
+
           <li
-            onClick={() => setActiveStatus(2)}
+            onClick={() => tabChange(2)}
             className={
               activeStatus === 2
                 ? "py-2 px-2 cursor-pointer border-t border-l border-r w-28 ease-in duration-150 rounded font-semibold xl:text-xs text-center text-blue-600"
@@ -220,7 +227,11 @@ export const Todos = memo(() => {
                   {todoList.map((todo) => (
                     <tr>
                       <td>
-                        <input type="checkbox" />
+                        <input
+                          type="checkbox"
+                          checked={todo.isCompleted}
+                          onChange={() => CheckTodoDone(todo.id)}
+                        />
                       </td>
                       <td className="px-6 py-4 ml-3 whitespace-nowrap">
                         <div className="text-sm font-bold text-gray-700">
