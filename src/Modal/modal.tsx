@@ -1,5 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback, memo } from "react";
-import { data } from "../todos";
+import React, { memo } from "react";
 
 import { Todo } from "../types";
 
@@ -12,9 +11,9 @@ type Props = {
 
 export const Modal = memo((props: Props) => {
   const data: Todo = {
-    id: new Date().getTime(),
+    id: 1,
     isCompleted: false,
-    date: new Date().toISOString().substring(0, 10),
+    date: "", //props.data && props.data.date.toString(), //new Date().toISOString().substring(0, 10),
     status: "ToDo",
     time: new Date().toTimeString().slice(0, 5),
     title: "", //props.data && props.data?.title,

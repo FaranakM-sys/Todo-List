@@ -3,7 +3,7 @@ export type Todo = {
   isCompleted: boolean
   title: string
   status: string
-  date: string
+  date: string 
   time: string
 }
 export type sortDirection={direction:string}

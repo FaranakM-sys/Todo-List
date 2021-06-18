@@ -43,12 +43,12 @@ export const Todos = memo(() => {
   );
 
   function editItem(item: Todo) {
-    setSelectedItem(item);
+    //setSelectedItem(item);
     setShowModal(true);
   }
 
   function addItem() {
-    setSelectedItem(undefined);
+    //setSelectedItem(undefined);
     setShowModal(true);
   }
 
@@ -58,6 +58,7 @@ export const Todos = memo(() => {
 
   const deleteTodo = (id: number) => {
     const updatedTodos = todoList.filter((todo) => todo.id !== id);
+    setAllItems(updatedTodos);
     setTodoList(updatedTodos);
   };
 
@@ -228,6 +229,11 @@ export const Todos = memo(() => {
                     <tr>
                       <td>
                         <input
+                          className={`${
+                            todo.status === completedBtn
+                              ? "invisible"
+                              : "visible"
+                          }  `}
                           type="checkbox"
                           checked={todo.isCompleted}
                           onChange={() => CheckTodoDone(todo.id)}
