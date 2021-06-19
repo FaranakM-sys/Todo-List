@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import { useRef } from "react";
 
 import { Todo } from "../types";
 
@@ -11,20 +11,29 @@ type Props = {
   data: Todo | undefined;
 };
 
-export const Modal = memo((props: Props) => {
-  const data: Todo = {
-    id: props.newId,
-    isCompleted: false,
-    date: "", // props.data === undefined ? "" : props.data.date.toString(), //new Date().toISOString().substring(0, 10),
-    status: "ToDo",
-    time: new Date().toTimeString().slice(0, 5),
-    title: "", //props.data && props.data?.title,
-  };
-  const [Titlevalue, setTitleValue] = useState(props.data?.title);
+export const Modal = (props: Props) => {
+  const dateRef = useRef<HTMLInputElement>(null);
+  const timeRef = useRef<HTMLInputElement>(null);
+  const titleRef = useRef<HTMLInputElement>(null);
 
-  const onChange = () => {
-    setTitleValue(props.data?.title);
+  const save = () => {
+    // if (props.data) {
+    if (dateRef.current && timeRef.current && titleRef.current) {
+      const data: Todo = {
+        id: props.newId,
+        isCompleted: false,
+        date: dateRef.current.value,
+        status: "ToDo",
+        time: timeRef.current.value,
+        title: titleRef.current.value,
+      };
+      props.addData(data);
+      props.setIsShow(false);
+      // } else {
+      // }
+    }
   };
+
   return (
     <div
       className={
@@ -39,12 +48,12 @@ export const Modal = memo((props: Props) => {
         <div>
           <label>Task Name</label>
           <input
+            ref={titleRef}
             type="text"
             className={`w-full p-2 text-primary border rounded-md outline-none text-sm transition duration-150 ease-in-out mb-4`}
             id="TaskName"
             placeholder="Enter your task name"
-            value={props.data && props.data.title}
-            onChange={onChange}
+            defaultValue={props.data && props.data.title}
           />
         </div>
         <div>
@@ -61,19 +70,21 @@ export const Modal = memo((props: Props) => {
         <div>
           <label>Date</label>
           <input
+            ref={dateRef}
             type="date"
             className={`w-full p-2 text-primary border rounded-md outline-none text-xs text-gray-500 transition duration-150 ease-in-out mb-4`}
             id="date"
-            value={props.data && props.data.date}
+            defaultValue={props.data && props.data.date}
           />
         </div>
         <div>
           <label>Time</label>
           <input
+            ref={timeRef}
             type="time"
             className={`w-full p-2 text-primary border rounded-md outline-none text-xs text-gray-500 transition duration-150 ease-in-out mb-4`}
             id="time"
-            value={props.data && props.data.time}
+            defaultValue={props.data && props.data.time}
           />
         </div>
 
@@ -85,7 +96,7 @@ export const Modal = memo((props: Props) => {
             Cancel
           </button>
           <button
-            onClick={() => props.addData(data)}
+            onClick={save}
             className="bg-blue-600 py-2 px-4 text-sm text-white rounded border  focus:outline-none w-20"
           >
             Save
@@ -94,4 +105,4 @@ export const Modal = memo((props: Props) => {
       </div>
     </div>
   );
-});
+};

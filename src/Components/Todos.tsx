@@ -13,11 +13,11 @@ export const Todos = memo(() => {
   const [activeStatus, setActiveStatus] = useState(1);
   const [isShowModal, setShowModal] = useState(false);
   const [formTitle, setFormTitle] = useState("Add Task");
-  const [selectedItems, setSelectedItem] = useState<Todo | undefined>();
+  const [selectedItems, setSelectedItem] =
+    useState<Todo | undefined>(undefined);
   const [todoList, setTodoList] = useState<Todo[]>(data);
   const [allItems, setAllItems] = useState<Todo[]>(data);
   const [newID, setNewID] = useState(0);
-  const [newTitle, setNewTtile] = useState("");
   const [headers, setHeaders] = useState<sortDirection[]>(sortDir);
 
   useEffect(() => {
