@@ -1,9 +1,11 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 
 import { Todo } from "../types";
 
 type Props = {
   isShow: boolean;
+  newId: number;
+  formTitle: string;
   setIsShow: (show: boolean) => void;
   addData: (data: Todo) => void;
   data: Todo | undefined;
@@ -11,14 +13,18 @@ type Props = {
 
 export const Modal = memo((props: Props) => {
   const data: Todo = {
-    id: 1,
+    id: props.newId,
     isCompleted: false,
-    date: "", //props.data && props.data.date.toString(), //new Date().toISOString().substring(0, 10),
+    date: "", // props.data === undefined ? "" : props.data.date.toString(), //new Date().toISOString().substring(0, 10),
     status: "ToDo",
     time: new Date().toTimeString().slice(0, 5),
     title: "", //props.data && props.data?.title,
   };
+  const [Titlevalue, setTitleValue] = useState(props.data?.title);
 
+  const onChange = () => {
+    setTitleValue(props.data?.title);
+  };
   return (
     <div
       className={
@@ -28,7 +34,7 @@ export const Modal = memo((props: Props) => {
     >
       <div className="w-full max-w-md m-auto bg-white rounded-lg border border-primaryBorder shadow-default py-10 px-16">
         <h1 className="text-2xl font-medium text-primary mt-4 mb-12 text-center">
-          Add Task
+          {props.formTitle}
         </h1>
         <div>
           <label>Task Name</label>
@@ -38,6 +44,7 @@ export const Modal = memo((props: Props) => {
             id="TaskName"
             placeholder="Enter your task name"
             value={props.data && props.data.title}
+            onChange={onChange}
           />
         </div>
         <div>

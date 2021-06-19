@@ -12,9 +12,12 @@ const inProgressBtn = "In Progress";
 export const Todos = memo(() => {
   const [activeStatus, setActiveStatus] = useState(1);
   const [isShowModal, setShowModal] = useState(false);
-  const [selectedItems, setSelectedItem] = useState<Todo>();
+  const [formTitle, setFormTitle] = useState("Add Task");
+  const [selectedItems, setSelectedItem] = useState<Todo | undefined>();
   const [todoList, setTodoList] = useState<Todo[]>(data);
   const [allItems, setAllItems] = useState<Todo[]>(data);
+  const [newID, setNewID] = useState(0);
+  const [newTitle, setNewTtile] = useState("");
   const [headers, setHeaders] = useState<sortDirection[]>(sortDir);
 
   useEffect(() => {
@@ -42,23 +45,30 @@ export const Todos = memo(() => {
     [todoList]
   );
 
-  function editItem(item: Todo) {
-    //setSelectedItem(item);
+  const editItem = useCallback((item: Todo) => {
+    setSelectedItem(item);
     setShowModal(true);
-  }
-
-  function addItem() {
-    //setSelectedItem(undefined);
-    setShowModal(true);
-  }
-
-  const addTodoList = useCallback((item: Todo) => {
-    setTodoList((todoList) => [...todoList, item]);
+    setFormTitle("Edit Task");
   }, []);
 
+  const addItem = () => {
+    setNewID(allItems[allItems.length - 1]["id"] + 1);
+    setSelectedItem(undefined);
+    setShowModal(true);
+    setFormTitle("Add Task");
+  };
+
+  const addTodoList = (item: Todo) => {
+    setTodoList((todoList) => [...todoList, item]);
+    setAllItems((todoList) => [...todoList, item]);
+  };
+
   const deleteTodo = (id: number) => {
+    const updateAllItems = allItems.filter((todo) => todo.id !== id);
     const updatedTodos = todoList.filter((todo) => todo.id !== id);
-    setAllItems(updatedTodos);
+
+    setAllItems(updateAllItems);
+
     setTodoList(updatedTodos);
   };
 
@@ -73,9 +83,9 @@ export const Todos = memo(() => {
       }
       return todo;
     });
-    console.log(updatedTodos);
     const todoItems = updatedTodos.filter((todo) => todo.isCompleted === true);
     setActiveStatus(2);
+
     setAllItems(updatedTodos);
     setTodoList(todoItems);
   };
@@ -112,7 +122,7 @@ export const Todos = memo(() => {
       <div className="flex justify-end mr-12 mt-8 ">
         <button
           onClick={addItem}
-          className="inline-flex items-center px-3 py-2 justify-end w-24 h-8 text-white text-xs font-semibold bg-blue-600 rounded-md shadow-sm"
+          className="inline-flex items-center px-3 py-2 justify-end w-24 h-8 text-white text-xs font-semibold bg-blue-600 rounded-md shadow-sm focus:outline-none"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -195,7 +205,12 @@ export const Todos = memo(() => {
                     >
                       {headers.map((val) => {
                         return (
-                          <button onClick={() => Sorter(val)}>Tasks</button>
+                          <button
+                            className="focus:outline-none"
+                            onClick={() => Sorter(val)}
+                          >
+                            Tasks
+                          </button>
                         );
                       })}
                     </th>
@@ -306,6 +321,8 @@ export const Todos = memo(() => {
       <Modal
         isShow={isShowModal}
         data={selectedItems}
+        newId={newID}
+        formTitle={formTitle}
         setIsShow={setShowModal}
         addData={addTodoList}
       />
