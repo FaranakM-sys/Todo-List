@@ -18,6 +18,7 @@ export const Todos = memo(() => {
   const [todoList, setTodoList] = useState<Todo[]>(data);
   const [allItems, setAllItems] = useState<Todo[]>(data);
   const [newID, setNewID] = useState(0);
+  const [currentId, setCurentId] = useState(0);
   const [headers, setHeaders] = useState<sortDirection[]>(sortDir);
 
   useEffect(() => {
@@ -45,11 +46,13 @@ export const Todos = memo(() => {
     [todoList]
   );
 
-  const editItem = useCallback((item: Todo) => {
+  const editItem = (item: Todo) => {
     setSelectedItem(item);
+    setCurentId(item.id);
+
     setShowModal(true);
     setFormTitle("Edit Task");
-  }, []);
+  };
 
   const addItem = () => {
     setNewID(allItems[allItems.length - 1]["id"] + 1);
@@ -61,6 +64,17 @@ export const Todos = memo(() => {
   const addTodoList = (item: Todo) => {
     setTodoList((todoList) => [...todoList, item]);
     setAllItems((todoList) => [...todoList, item]);
+  };
+
+  const updateTodoList = (item: Todo) => {
+    const objIndex = allItems.findIndex((obj) => obj.id === item.id);
+
+    allItems[objIndex].title = item.title;
+    allItems[objIndex].id = item.id;
+    allItems[objIndex].status = item.status;
+    allItems[objIndex].isCompleted = item.isCompleted;
+    allItems[objIndex].date = item.date;
+    allItems[objIndex].time = item.time;
   };
 
   const deleteTodo = (id: number) => {
@@ -322,9 +336,11 @@ export const Todos = memo(() => {
         isShow={isShowModal}
         data={selectedItems}
         newId={newID}
+        currentId={currentId}
         formTitle={formTitle}
         setIsShow={setShowModal}
         addData={addTodoList}
+        editData={updateTodoList}
       />
     </>
   );
