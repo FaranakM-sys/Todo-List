@@ -5,9 +5,11 @@ import { Todo } from "../types";
 type Props = {
   isShow: boolean;
   newId: number;
+  currentId: number;
   formTitle: string;
   setIsShow: (show: boolean) => void;
   addData: (data: Todo) => void;
+  editData: (data: Todo) => void;
   data: Todo | undefined;
 };
 
@@ -15,22 +17,38 @@ export const Modal = (props: Props) => {
   const dateRef = useRef<HTMLInputElement>(null);
   const timeRef = useRef<HTMLInputElement>(null);
   const titleRef = useRef<HTMLInputElement>(null);
+  const statusRef = useRef<HTMLSelectElement>(null);
 
   const save = () => {
-    // if (props.data) {
-    if (dateRef.current && timeRef.current && titleRef.current) {
-      const data: Todo = {
-        id: props.newId,
-        isCompleted: false,
-        date: dateRef.current.value,
-        status: "ToDo",
-        time: timeRef.current.value,
-        title: titleRef.current.value,
-      };
-      props.addData(data);
+    if (
+      dateRef.current &&
+      timeRef.current &&
+      titleRef.current &&
+      statusRef.current
+    ) {
+      if (!props.data) {
+        const data: Todo = {
+          id: props.newId,
+          isCompleted: false,
+          date: dateRef.current.value,
+          status: "ToDo",
+          time: timeRef.current.value,
+          title: titleRef.current.value,
+        };
+        props.addData(data);
+      } else {
+        const data: Todo = {
+          id: props.currentId,
+          isCompleted: statusRef.current.value === "Completed" ? true : false,
+          date: dateRef.current.value,
+          status: statusRef.current.value,
+          time: timeRef.current.value,
+          title: titleRef.current.value,
+        };
+
+        props.editData(data);
+      }
       props.setIsShow(false);
-      // } else {
-      // }
     }
   };
 
@@ -58,13 +76,16 @@ export const Modal = (props: Props) => {
         </div>
         <div>
           <label>Status</label>
-          <input
-            type="text"
-            className={`w-full p-2 bg-gray-200  text-primary border rounded-md outline-none text-xs text-gray-500 transition duration-150 ease-in-out mb-4`}
-            id="status"
-            readOnly={!props.data}
-            value={props.data ? props.data.status : "ToDo"}
-          />
+
+          <select
+            ref={statusRef}
+            className={`w-full p-2 text-primary border rounded-md outline-none text-sm transition duration-150 ease-in-out mb-4`}
+            defaultValue={props.data && props.data.status}
+          >
+            <option value="ToDo">ToDo</option>
+            <option value="Paused">Paused</option>
+            <option value="In Progress">In Progress</option>
+          </select>
         </div>
 
         <div>
