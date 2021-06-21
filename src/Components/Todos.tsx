@@ -157,13 +157,13 @@ export const Todos = memo(() => {
       </div>
 
       <div className="mx-auto container py-0 px-4 flex items-center justify-center w-full">
-        <ul className="w-full hidden md:flex items-center pb-0 border-b space-x-1 border-gray-200">
+        <ul className="w-full hidden md:flex sm:flex items-center pb-0 border-b space-x-1 border-gray-200">
           <li
             onClick={() => tabChange(1)}
             className={
               activeStatus === 1
-                ? "py-2 px-4 cursor-pointer border-t border-l border-r w-28 ease-in duration-150 rounded xl:text-xs font-semibold text-center text-blue-600"
-                : "py-2 px-4 cursor-pointer  border-t border-l border-r w-28 bg-gray-50 hover:bg-indigo-50 ease-in duration-150 rounded xl:text-xs text-center text-gray-400"
+                ? "py-2 px-4 cursor-pointer border-t border-l border-r  w-28 ease-in duration-150 rounded text-xs font-semibold text-center text-blue-600"
+                : "py-2 px-4 cursor-pointer  border-t border-l border-r w-28  bg-gray-50 hover:bg-indigo-50 ease-in duration-150 rounded text-xs text-center text-gray-400"
             }
           >
             To Do
@@ -173,8 +173,8 @@ export const Todos = memo(() => {
             onClick={() => tabChange(2)}
             className={
               activeStatus === 2
-                ? "py-2 px-2 cursor-pointer border-t border-l border-r w-28 ease-in duration-150 rounded font-semibold xl:text-xs text-center text-blue-600"
-                : "py-2 px-4 cursor-pointer border-t border-l border-r w-28 bg-gray-50 hover:bg-indigo-50 ease-in duration-150 rounded text-center xl:text-xs text-gray-400"
+                ? "lg:py-5 py-2 px-2 cursor-pointer border-t border-l border-r w-28  ease-in duration-150 rounded font-semibold text-xs text-center text-blue-600"
+                : "py-2 px-4 cursor-pointer border-t border-l border-r w-28 bg-gray-50 hover:bg-indigo-50 ease-in duration-150 rounded text-center text-xs text-gray-400"
             }
           >
             Done Tasks
@@ -268,7 +268,7 @@ export const Todos = memo(() => {
                           onChange={() => CheckTodoDone(todo.id)}
                         />
                       </td>
-                      <td className="px-6 py-4 ml-3 whitespace-nowrap">
+                      <td className="px-6 py-4 ml-3 whitespace-nowrap sm:px-3">
                         <div className="text-sm font-bold text-gray-700">
                           {todo.title}
                         </div>
@@ -300,7 +300,7 @@ export const Todos = memo(() => {
                           {todo.time}
                         </div>
                       </td>
-                      <td className="flex py-5 px-10 space-x-6">
+                      <td className="flex py-5 px-10 space-x-6 sm:space-x-3 sm:px-4">
                         <svg
                           onClick={() => editItem(todo)}
                           xmlns="http://www.w3.org/2000/svg"
