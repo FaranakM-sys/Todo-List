@@ -173,7 +173,7 @@ export const Todos = memo(() => {
             onClick={() => tabChange(2)}
             className={
               activeStatus === 2
-                ? "lg:py-5 py-2 px-2 cursor-pointer border-t border-l border-r w-28  ease-in duration-150 rounded font-semibold text-xs text-center text-blue-600"
+                ? "py-2 px-2 cursor-pointer border-t border-l border-r w-28  ease-in duration-150 rounded font-semibold text-xs text-center text-blue-600"
                 : "py-2 px-4 cursor-pointer border-t border-l border-r w-28 bg-gray-50 hover:bg-indigo-50 ease-in duration-150 rounded text-center text-xs text-gray-400"
             }
           >
