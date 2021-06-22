@@ -47,6 +47,7 @@ export const Todos = memo(() => {
   );
 
   const editItem = (item: Todo) => {
+    console.log(todoList);
     setSelectedItem(item);
     setCurentId(item.id);
 
@@ -56,6 +57,7 @@ export const Todos = memo(() => {
 
   const addItem = () => {
     setNewID(allItems[allItems.length - 1]["id"] + 1);
+
     setSelectedItem(undefined);
     setShowModal(true);
     setFormTitle("Add Task");

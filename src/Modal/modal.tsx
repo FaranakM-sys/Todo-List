@@ -47,10 +47,43 @@ export const Modal = (props: Props) => {
         };
 
         props.editData(data);
+        console.log(data.title);
       }
       props.setIsShow(false);
     }
   };
+  if (props.data) {
+    if (
+      titleRef.current &&
+      statusRef.current &&
+      dateRef.current &&
+      timeRef.current
+    ) {
+      titleRef.current.value = props.data.title;
+      statusRef.current.value = props.data.status;
+      dateRef.current.value = props.data.date;
+      statusRef.current.value = props.data.status;
+      timeRef.current.value = props.data.time;
+    }
+  } else {
+    if (
+      titleRef.current &&
+      statusRef.current &&
+      dateRef.current &&
+      timeRef.current
+    ) {
+      titleRef.current.value = "";
+      statusRef.current.value = "ToDo";
+      dateRef.current.value = "";
+      statusRef.current.value = "";
+      timeRef.current.value = "";
+    }
+  }
+  console.log("Modalll");
+  console.log(titleRef.current?.value);
+  //console.log(props.data);
+  console.log(props.currentId);
+  console.log(props.data?.title);
 
   return (
     <div
@@ -82,7 +115,9 @@ export const Modal = (props: Props) => {
             className={`w-full p-2 text-primary border rounded-md outline-none text-sm transition duration-150 ease-in-out mb-4`}
             defaultValue={props.data && props.data.status}
           >
-            <option value="ToDo">ToDo</option>
+            <option selected={true} value="ToDo">
+              ToDo
+            </option>
             <option value="Paused">Paused</option>
             <option value="In Progress">In Progress</option>
           </select>
