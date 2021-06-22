@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useRef } from "react";
 
 import { Todo } from "../types";
@@ -47,11 +48,13 @@ export const Modal = (props: Props) => {
         };
 
         props.editData(data);
-        console.log(data.title);
       }
       props.setIsShow(false);
     }
   };
+
+  useEffect(()=>{
+    
   if (props.data) {
     if (
       titleRef.current &&
@@ -62,7 +65,6 @@ export const Modal = (props: Props) => {
       titleRef.current.value = props.data.title;
       statusRef.current.value = props.data.status;
       dateRef.current.value = props.data.date;
-      statusRef.current.value = props.data.status;
       timeRef.current.value = props.data.time;
     }
   } else {
@@ -75,15 +77,10 @@ export const Modal = (props: Props) => {
       titleRef.current.value = "";
       statusRef.current.value = "ToDo";
       dateRef.current.value = "";
-      statusRef.current.value = "";
       timeRef.current.value = "";
     }
   }
-  console.log("Modalll");
-  console.log(titleRef.current?.value);
-  //console.log(props.data);
-  console.log(props.currentId);
-  console.log(props.data?.title);
+  },[props.data])
 
   return (
     <div
@@ -114,12 +111,14 @@ export const Modal = (props: Props) => {
             ref={statusRef}
             className={`w-full p-2 text-primary border rounded-md outline-none text-sm transition duration-150 ease-in-out mb-4`}
             defaultValue={props.data && props.data.status}
+            disabled={!props.data}
           >
-            <option selected={true} value="ToDo">
+            <option value="ToDo">
               ToDo
             </option>
             <option value="Paused">Paused</option>
             <option value="In Progress">In Progress</option>
+            <option value="Completed">Completed</option>
           </select>
         </div>
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, memo, useMemo } from "react";
+import React, { useState, useEffect, memo, useMemo } from "react";
 
 import { data, sortDir } from "../todos";
 import { Todo, sortDirection } from "../types";
@@ -47,7 +47,6 @@ export const Todos = memo(() => {
   );
 
   const editItem = (item: Todo) => {
-    console.log(todoList);
     setSelectedItem(item);
     setCurentId(item.id);
 
@@ -77,6 +76,14 @@ export const Todos = memo(() => {
     allItems[objIndex].isCompleted = item.isCompleted;
     allItems[objIndex].date = item.date;
     allItems[objIndex].time = item.time;
+
+    if(item.isCompleted && item.status === completedBtn)
+    {
+    setActiveStatus(2);
+    setAllItems(allItems);
+    const todoItems = allItems.filter((todo) => todo.isCompleted === true);
+    setTodoList(todoItems);
+  }
   };
 
   const deleteTodo = (id: number) => {
@@ -119,19 +126,6 @@ export const Todos = memo(() => {
       setTodoList(alltodos);
     }
   };
-
-  /*useEffect(() => {
-    const json = localStorage.getItem("todoList");
-    const loadedTodos = JSON.parse(json !== null ? json : "");
-    if (loadedTodos) {
-      setTodoList(loadedTodos);
-    }
-  }, []);
-
-  useEffect(() => {
-    const json = JSON.stringify(todoList);
-    localStorage.setItem("todoList", json);
-  }, [todoList]);*/
 
   return (
     <>
