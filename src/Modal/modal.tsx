@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useRef } from "react";
 
 import { Todo } from "../types";
@@ -53,8 +52,6 @@ export const Modal = (props: Props) => {
     }
   };
 
-  useEffect(()=>{
-    
   if (props.data) {
     if (
       titleRef.current &&
@@ -80,7 +77,6 @@ export const Modal = (props: Props) => {
       timeRef.current.value = "";
     }
   }
-  },[props.data])
 
   return (
     <div
@@ -113,9 +109,7 @@ export const Modal = (props: Props) => {
             defaultValue={props.data && props.data.status}
             disabled={!props.data}
           >
-            <option value="ToDo">
-              ToDo
-            </option>
+            <option value="ToDo">ToDo</option>
             <option value="Paused">Paused</option>
             <option value="In Progress">In Progress</option>
             <option value="Completed">Completed</option>

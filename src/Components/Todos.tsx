@@ -13,8 +13,9 @@ export const Todos = memo(() => {
   const [activeStatus, setActiveStatus] = useState(1);
   const [isShowModal, setShowModal] = useState(false);
   const [formTitle, setFormTitle] = useState("Add Task");
-  const [selectedItems, setSelectedItem] =
-    useState<Todo | undefined>(undefined);
+  const [selectedItems, setSelectedItem] = useState<Todo | undefined>(
+    undefined
+  );
   const [todoList, setTodoList] = useState<Todo[]>(data);
   const [allItems, setAllItems] = useState<Todo[]>(data);
   const [newID, setNewID] = useState(0);
@@ -77,13 +78,12 @@ export const Todos = memo(() => {
     allItems[objIndex].date = item.date;
     allItems[objIndex].time = item.time;
 
-    if(item.isCompleted && item.status === completedBtn)
-    {
-    setActiveStatus(2);
-    setAllItems(allItems);
-    const todoItems = allItems.filter((todo) => todo.isCompleted === true);
-    setTodoList(todoItems);
-  }
+    if (item.isCompleted && item.status === completedBtn) {
+      setActiveStatus(2);
+      setAllItems(allItems);
+      const todoItems = allItems.filter((todo) => todo.isCompleted === true);
+      setTodoList(todoItems);
+    }
   };
 
   const deleteTodo = (id: number) => {
@@ -92,6 +92,71 @@ export const Todos = memo(() => {
 
     setAllItems(updateAllItems);
 
+    setTodoList(updatedTodos);
+  };
+
+  const todayTodo = () => {
+    const today = new Date();
+    const updateAllItems = allItems.filter(
+      (todo) =>
+        todo.date.substring(todo.date.length, 8) ===
+        String(today.getDate()).padStart(2, "0")
+    );
+    const updatedTodos = todoList.filter(
+      (todo) =>
+        todo.date.substring(todo.date.length, 8) ===
+        String(today.getDate()).padStart(2, "0")
+    );
+    setAllItems(updateAllItems);
+    setTodoList(updatedTodos);
+  };
+
+  const monthTodo = () => {
+    const d = new Date();
+    const thisYear = new Date().getFullYear();
+
+    const updateAllItems = allItems.filter(
+      (todo) =>
+        todo.date.substring(todo.date.length - 3, 5) ===
+          String(d.getMonth() + 1).padStart(2, "0") &&
+        todo.date.substring(0, 4) === thisYear.toString()
+    );
+    const updatedTodos = todoList.filter(
+      (todo) =>
+        todo.date.substring(todo.date.length - 3, 5) ===
+          String(d.getMonth() + 1).padStart(2, "0") &&
+        todo.date.substring(0, 4) === thisYear.toString()
+    );
+    setAllItems(updateAllItems);
+    setTodoList(updatedTodos);
+  };
+
+  const weekTodo = () => {
+    const a = new Date();
+    const lastWeek = new Date(a.getFullYear(), a.getMonth(), a.getDate() - 6)
+      .toISOString()
+      .split("T")[0];
+    const startDayWeek = lastWeek.substring(lastWeek.length, 8);
+    const today = String(new Date().getDate()).padStart(2, "0");
+    const d = new Date();
+    const thisYear = new Date().getFullYear();
+    const updateAllItems = allItems.filter(
+      (todo) =>
+        todo.date.substring(todo.date.length - 3, 5) ===
+          String(d.getMonth() + 1).padStart(2, "0") &&
+        todo.date.substring(0, 4) === thisYear.toString() &&
+        todo.date.substring(todo.date.length, 8) >= startDayWeek &&
+        todo.date.substring(todo.date.length, 8) < today
+    );
+    const updatedTodos = todoList.filter(
+      (todo) =>
+        todo.date.substring(todo.date.length - 3, 5) ===
+          String(d.getMonth() + 1).padStart(2, "0") &&
+        todo.date.substring(0, 4) === thisYear.toString() &&
+        todo.date.substring(todo.date.length, 8) >= startDayWeek &&
+        todo.date.substring(todo.date.length, 8) < today
+    );
+    setAllItems(updateAllItems);
     setTodoList(updatedTodos);
   };
 
@@ -142,9 +207,9 @@ export const Todos = memo(() => {
             stroke="currentColor"
           >
             <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
               d="M12 6v6m0 0v6m0-6h6m-6 0H6"
             />
           </svg>
@@ -181,20 +246,23 @@ export const Todos = memo(() => {
       <div className="flex justify-end py-8 mr-12">
         <span className="relative z-0 inline-flex rounded-sm shadow-sm">
           <button
+            onClick={monthTodo}
             type="button"
             className="relative inline-flex items-center px-4 py-2 text-xs font-medium leading-5 text-gray-700 transition duration-150 ease-in-out bg-white border border-gray-300 rounded-l-md hover:text-blue-600 focus-visible:z-10 focus:outline-none focus-visible:border-blue-300 focus-visible:shadow-outline-blue active:bg-gray-100 active:text-blue-600"
           >
             Month
           </button>
           <button
+            onClick={weekTodo}
             type="button"
             className="relative inline-flex items-center px-4 py-2 -ml-px text-xs font-medium leading-5 text-gray-700 transition duration-150 ease-in-out bg-white border border-gray-300 hover:text-blue-600 focus-visible:z-10 focus:outline-none focus-visible:border-blue-300 focus-visible:shadow-outline-blue active:bg-gray-100 active:text-blue-600"
           >
             Week
           </button>
           <button
+            onClick={todayTodo}
             type="button"
-            className="relative inline-flex items-center px-4 py-2 -ml-px text-xs font-medium leading-5 text-blue-700 transition duration-150 ease-in-out bg-white border border-gray-300 rounded-r-md hover:text-blue-600 focus-visible:z-10 focus:outline-none focus-visible:border-blue-300 focus-visible:shadow-outline-blue active:bg-gray-100 active:text-blue-600"
+            className="relative inline-flex items-center px-4 py-2 -ml-px text-xs font-medium leading-5 text-gray-700 transition duration-150 ease-in-out bg-white border border-gray-300 rounded-r-md hover:text-blue-600 focus-visible:z-10 focus:outline-none focus-visible:border-blue-300 focus-visible:shadow-outline-blue active:bg-gray-100 active:text-blue-600"
           >
             Day
           </button>
@@ -216,6 +284,7 @@ export const Todos = memo(() => {
                       {headers.map((val) => {
                         return (
                           <button
+                            key={0}
                             className="focus:outline-none"
                             onClick={() => Sorter(val)}
                           >
@@ -251,7 +320,7 @@ export const Todos = memo(() => {
 
                 <tbody className="bg-white divide-y divide-gray-200">
                   {todoList.map((todo) => (
-                    <tr>
+                    <tr key={todo.id}>
                       <td>
                         <input
                           className={`${
@@ -314,9 +383,9 @@ export const Todos = memo(() => {
                           fill="currentColor"
                         >
                           <path
-                            fill-rule="evenodd"
+                            fillRule="evenodd"
                             d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                            clip-rule="evenodd"
+                            clipRule="evenodd"
                           />
                         </svg>
                       </td>

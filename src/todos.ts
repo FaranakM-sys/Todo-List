@@ -12,7 +12,7 @@ export const data = [
       isCompleted: false,
       title: "React Project",
       status:"In Progress",
-      date: "2021-04-12",
+      date: "2021-06-29",
       time: "09:30"
     },
     {
@@ -20,7 +20,7 @@ export const data = [
       isCompleted: false,
       title: "A New Task",
       status:"In Progress",
-      date: "2021-08-15",
+      date: "2021-06-15",
       time: "10:25"
     },
   ]
