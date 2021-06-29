@@ -1,15 +1,16 @@
+const purgecss = require('@fullhuman/postcss-purgecss')
+const cssnano = require('cssnano')
+
 module.exports = {
-    plugins: [
-      require("postcss-import")({
-        plugins: [require("stylelint")],
-      }),
-      require("tailwindcss")("./tailwind.config.js"),
-      require("postcss-preset-env")({
-        autoprefixer: { grid: true },
-        features: {
-          "nesting-rules": true,
-        },
-        browsers: ["> 1%", "last 2 versions", "Firefox ESR"],
-      }),
-    ],
-  }
+  plugins: [
+    require('tailwindcss'),
+    process.env.NODE_ENV === 'production' ? require('autoprefixer') : null,
+    process.env.NODE_ENV === 'production'
+      ? cssnano({ preset: 'default' })
+      : null,
+    purgecss({
+      content: ['./layouts/**/*.html', './src/**/*.vue', './src/**/*.jsx'],
+      defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || []
+    })
+  ]
+}
