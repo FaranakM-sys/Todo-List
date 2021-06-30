@@ -68,8 +68,16 @@ export const Todos = memo(() => {
   };
 
   const addTodoList = (item: Todo) => {
-    setTodoList((todoList) => [...todoList, item]);
-    setAllItems((todoList) => [...todoList, item]);
+    if (activeStatus === 2) {
+      setActiveStatus(1);
+    }
+    const finalList = [...allItems, item];
+    console.log(finalList);
+    const todoNoCompleted = finalList.filter(
+      (todo) => todo.isCompleted === false
+    );
+    setTodoList(todoNoCompleted);
+    setAllItems(finalList);
   };
 
   const updateTodoList = (item: Todo) => {
@@ -101,42 +109,47 @@ export const Todos = memo(() => {
 
   const todayTodo = () => {
     const today = new Date();
-    const updateAllItems = allItems.filter(
+    let todoItems = allItems;
+    const thisYear = new Date().getFullYear();
+
+    if (activeStatus === 1) {
+      todoItems = allItems.filter((todo) => todo.isCompleted === false);
+    } else if (activeStatus === 2) {
+      todoItems = allItems.filter((todo) => todo.isCompleted === true);
+    }
+    const updatedTodos = todoItems.filter(
       (todo) =>
         todo.date.substring(todo.date.length, 8) ===
-        String(today.getDate()).padStart(2, "0")
+          String(today.getDate()).padStart(2, "0") &&
+        todo.date.substring(0, 4) === thisYear.toString()
     );
-    const updatedTodos = todoList.filter(
-      (todo) =>
-        todo.date.substring(todo.date.length, 8) ===
-        String(today.getDate()).padStart(2, "0")
-    );
-    setAllItems(updateAllItems);
+
     setTodoList(updatedTodos);
   };
 
   const monthTodo = () => {
     const d = new Date();
     const thisYear = new Date().getFullYear();
+    let todoItems = allItems;
 
-    const updateAllItems = allItems.filter(
+    if (activeStatus === 1) {
+      todoItems = allItems.filter((todo) => todo.isCompleted === false);
+    } else if (activeStatus === 2) {
+      todoItems = allItems.filter((todo) => todo.isCompleted === true);
+    }
+    const updatedTodos = todoItems.filter(
       (todo) =>
         todo.date.substring(todo.date.length - 3, 5) ===
           String(d.getMonth() + 1).padStart(2, "0") &&
         todo.date.substring(0, 4) === thisYear.toString()
     );
-    const updatedTodos = todoList.filter(
-      (todo) =>
-        todo.date.substring(todo.date.length - 3, 5) ===
-          String(d.getMonth() + 1).padStart(2, "0") &&
-        todo.date.substring(0, 4) === thisYear.toString()
-    );
-    setAllItems(updateAllItems);
+
     setTodoList(updatedTodos);
   };
 
   const weekTodo = () => {
     const a = new Date();
+    let todoItems = allItems;
     const lastWeek = new Date(a.getFullYear(), a.getMonth(), a.getDate() - 6)
       .toISOString()
       .split("T")[0];
@@ -144,7 +157,13 @@ export const Todos = memo(() => {
     const today = String(new Date().getDate()).padStart(2, "0");
     const d = new Date();
     const thisYear = new Date().getFullYear();
-    const updateAllItems = allItems.filter(
+
+    if (activeStatus === 1) {
+      todoItems = allItems.filter((todo) => todo.isCompleted === false);
+    } else if (activeStatus === 2) {
+      todoItems = allItems.filter((todo) => todo.isCompleted === true);
+    }
+    const updatedTodos = todoItems.filter(
       (todo) =>
         todo.date.substring(todo.date.length - 3, 5) ===
           String(d.getMonth() + 1).padStart(2, "0") &&
@@ -152,15 +171,7 @@ export const Todos = memo(() => {
         todo.date.substring(todo.date.length, 8) >= startDayWeek &&
         todo.date.substring(todo.date.length, 8) < today
     );
-    const updatedTodos = todoList.filter(
-      (todo) =>
-        todo.date.substring(todo.date.length - 3, 5) ===
-          String(d.getMonth() + 1).padStart(2, "0") &&
-        todo.date.substring(0, 4) === thisYear.toString() &&
-        todo.date.substring(todo.date.length, 8) >= startDayWeek &&
-        todo.date.substring(todo.date.length, 8) < today
-    );
-    setAllItems(updateAllItems);
+
     setTodoList(updatedTodos);
   };
 

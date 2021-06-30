@@ -98,6 +98,7 @@ export const Modal = (props: Props) => {
             id="TaskName"
             placeholder="Enter your task name"
             defaultValue={props.data && props.data.title}
+            disabled={props.data && props.data.status === "Completed"}
           />
         </div>
         <div>
@@ -107,7 +108,9 @@ export const Modal = (props: Props) => {
             ref={statusRef}
             className={`w-full p-2 text-primary border rounded-md outline-none text-sm transition duration-150 ease-in-out mb-4`}
             defaultValue={props.data && props.data.status}
-            disabled={!props.data}
+            disabled={
+              !props.data || (props.data && props.data.status === "Completed")
+            }
           >
             <option value="ToDo">ToDo</option>
             <option value="Paused">Paused</option>
@@ -124,6 +127,7 @@ export const Modal = (props: Props) => {
             className={`w-full p-2 text-primary border rounded-md outline-none text-xs text-gray-500 transition duration-150 ease-in-out mb-4`}
             id="date"
             defaultValue={props.data && props.data.date}
+            disabled={props.data && props.data.status === "Completed"}
           />
         </div>
         <div>
@@ -134,6 +138,7 @@ export const Modal = (props: Props) => {
             className={`w-full p-2 text-primary border rounded-md outline-none text-xs text-gray-500 transition duration-150 ease-in-out mb-4`}
             id="time"
             defaultValue={props.data && props.data.time}
+            disabled={props.data && props.data.status === "Completed"}
           />
         </div>
 
