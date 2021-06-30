@@ -56,7 +56,11 @@ export const Todos = memo(() => {
   };
 
   const addItem = () => {
-    setNewID(allItems[allItems.length - 1]["id"] + 1);
+    if (allItems.length !== 0) {
+      setNewID(allItems[allItems.length - 1]["id"] + 1);
+    } else {
+      setNewID(0);
+    }
 
     setSelectedItem(undefined);
     setShowModal(true);
